@@ -25,7 +25,7 @@ frame_number = 0
 
 def own(filename):
     input_movie = cv2.VideoCapture(filename)
-    length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))
+    length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))-1
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, 1)
     rval, on = input_movie.read()
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, length-1)
@@ -51,7 +51,7 @@ def own(filename):
                 feature += current_features[key]
             feature = feature / len(current_features)
             features.append(feature)
-        print("Scanning frame {} / {}".format(frame_number, length))
+        print("Scanning frame {} / {}".format(frame_number, length-2))
         temp = gray_frame
         frame_number += 1
     padding = [0.0] * 1
@@ -59,7 +59,7 @@ def own(filename):
     apex_frame_idx = features.argmax()
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, apex_frame_idx)
     rval, frame = input_movie.read()
-    cv2.imwrite('apex.jpg', frame)
+    cv2.imwrite('apex3.jpg', frame)
     return features, apex_frame_idx
 
 
@@ -199,6 +199,6 @@ def draw_avg_plot(features, pred_apex_idx, clip_name):
     plt.close()
 
 
-features, apex_relative_idx = own("test.mp4")
-draw_avg_plot(features, apex_relative_idx, 'own1')
+features, apex_relative_idx = own("test3.mp4")
+draw_avg_plot(features, apex_relative_idx, 'own3')
 print(apex_relative_idx)

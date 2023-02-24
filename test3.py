@@ -23,7 +23,7 @@ face_landmarks_list = []
 frame_number = 0
 
 
-def own(filename):
+def own(filename, e):
     input_movie = cv2.VideoCapture(filename)
     length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))-1
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, 1)
@@ -34,25 +34,26 @@ def own(filename):
     off = cv2.cvtColor(off, cv2.COLOR_BGR2GRAY)
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, 1)
     features = []
+    temp_frame = []
     frame_number = 0
     while True:
         ret, frame = input_movie.read()
+        feature = 0
         if not ret:
             break
         # Convert the image from BGR color (which OpenCV uses) to RGB color (which face_recognition uses)
-        rgb_frame = frame[:, :, ::-1]
-        # set rgb frame to gray
-        gray_frame = cv2.cvtColor(rgb_frame, cv2.COLOR_BGR2GRAY)
-        if(frame_number != 0):
+        # rgb_frame = frame[:, :, ::-1]
+        # set frame to gray
+        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if(frame_number >= e):
             current_features = compute_cell_features(
-                gray_frame, on, off, temp)
-            feature = 0
+                gray_frame, on, off, temp_frame[frame_number-e])
             for key in current_features:
                 feature += current_features[key]
             feature = feature / len(current_features)
             features.append(feature)
-        print("Scanning frame {} / {}".format(frame_number, length-2))
-        temp = gray_frame
+        print("Scanning frame {} / {}, feature: {}".format(frame_number, length-2, feature))
+        temp_frame.append(gray_frame)
         frame_number += 1
     padding = [0.0] * 1
     features = np.array(padding + features)
@@ -160,7 +161,7 @@ def compute_cell_difference(cell_t, cell_onset, cell_offset, cell_epsilon):
     numerator = (np.abs(cell_t - cell_offset) + 1.0)
     difference1 = numerator / denominator
 
-    # difference = difference + difference1
+    difference = difference + difference1
 
     return difference.mean()
 
@@ -199,6 +200,6 @@ def draw_avg_plot(features, pred_apex_idx, clip_name):
     plt.close()
 
 
-features, apex_relative_idx = own("test3.mp4")
+features, apex_relative_idx = own("test3.mp4", 1)
 draw_avg_plot(features, apex_relative_idx, 'own3')
 print(apex_relative_idx)

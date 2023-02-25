@@ -23,7 +23,7 @@ face_landmarks_list = []
 frame_number = 0
 
 
-def own(filename, e):
+def apex_frame_taker(filename, e):
     input_movie = cv2.VideoCapture(filename)
     length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))-1
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, 1)
@@ -60,7 +60,8 @@ def own(filename, e):
     apex_frame_idx = features.argmax()
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, apex_frame_idx)
     rval, frame = input_movie.read()
-    cv2.imwrite('apex3.jpg', frame)
+    # save apex frame
+    cv2.imwrite('apex.jpg', frame)
     return features, apex_frame_idx
 
 
@@ -200,6 +201,6 @@ def draw_avg_plot(features, pred_apex_idx, clip_name):
     plt.close()
 
 
-features, apex_relative_idx = own("test3.mp4", 1)
+features, apex_relative_idx = apex_frame_taker("test3.mp4", 1)
 draw_avg_plot(features, apex_relative_idx, 'own3')
 print(apex_relative_idx)

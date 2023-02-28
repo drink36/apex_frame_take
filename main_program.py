@@ -28,6 +28,7 @@ def apex_frame_taker(filename, e):
     length = int(input_movie.get(cv2.CAP_PROP_FRAME_COUNT))-1
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, 1)
     rval, on = input_movie.read()
+    cv2.imwrite('onset.jpg', on)
     input_movie.set(cv2.CAP_PROP_POS_FRAMES, length-1)
     rval, off = input_movie.read()
     on = cv2.cvtColor(on, cv2.COLOR_BGR2GRAY)
@@ -62,6 +63,10 @@ def apex_frame_taker(filename, e):
     rval, frame = input_movie.read()
     # save apex frame
     cv2.imwrite('apex.jpg', frame)
+    on = cv2.imread('onset.jpg')
+    apex = cv2.imread('apex.jpg')
+    diff = cv2.absdiff(on, apex)
+    cv2.subtract('diff.jpg', diff)
     return features, apex_frame_idx
 
 
@@ -200,7 +205,7 @@ def draw_avg_plot(features, pred_apex_idx, clip_name):
     plt.cla()
     plt.close()
 
-
-features, apex_relative_idx = apex_frame_taker("test3.mp4", 1)
-draw_avg_plot(features, apex_relative_idx, 'own3')
-print(apex_relative_idx)
+if __name__ == "__main__":
+    features, apex_relative_idx = apex_frame_taker("test3.mp4", 1)
+    draw_avg_plot(features, apex_relative_idx, 'own3')
+    print(apex_relative_idx)

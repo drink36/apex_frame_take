@@ -65,8 +65,8 @@ def apex_frame_taker(filename, e):
     cv2.imwrite('apex.jpg', frame)
     on = cv2.imread('onset.jpg')
     apex = cv2.imread('apex.jpg')
-    diff = cv2.absdiff(on, apex)
-    cv2.subtract('diff.jpg', diff)
+    diff = cv2.subtract(on, apex)
+    cv2.imwrite('diff.jpg', diff)
     return features, apex_frame_idx
 
 
@@ -204,6 +204,7 @@ def draw_avg_plot(features, pred_apex_idx, clip_name):
     plt.clf()
     plt.cla()
     plt.close()
+
 
 if __name__ == "__main__":
     features, apex_relative_idx = apex_frame_taker("test3.mp4", 1)

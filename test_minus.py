@@ -28,6 +28,6 @@ if __name__ == '__main__':
     diff2 = minus2(img2, img1)
     diff3 = minus3(img2, img1)
     # save image
-    cv2.imwrite('diff.jpg', diff)
+    cv2.imwrite('diff1.jpg', diff)
     cv2.imwrite('diff2.jpg', diff2)
     cv2.imwrite('diff3.jpg', diff3)
